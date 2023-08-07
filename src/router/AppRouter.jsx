@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router-dom"
 import { LoginPage } from "../auth"
 import { HeroesRoutes } from "../heroes"
+import { PrivateRoute } from "./PrivateRoute"
+import { PublicRoute } from "./PublicRoute"
 
 
 export const AppRouter = () => {
@@ -9,8 +11,28 @@ export const AppRouter = () => {
   return (
     <>
       <Routes>
-        <Route path="login" element={<LoginPage />} />
-        <Route path="/*" element={<HeroesRoutes /> /**Cualquier ruta que no sea el login pasa por este componente */} />
+        <Route path="login/*" element={
+          <PublicRoute>
+            <Routes>
+              <Route path="/*" element={<LoginPage />}/>
+            </Routes>
+          </PublicRoute>
+        } />
+
+        {/* <Route path="/login" element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+          } 
+        /> */}
+        
+        {/**Esta es la ruta que necesitamos proteger, esta y todas las subrutas */}
+        <Route path="/*" element={
+          <PrivateRoute>
+            <HeroesRoutes />
+          </PrivateRoute>}>{/**Directamente le pasamos el componente de las rutas */}
+        </Route>
+        {/* <Route path="/*" element={<HeroesRoutes /> /**Cualquier ruta que no sea el login pasa por este componente */}
       </Routes>
     </>
   )
